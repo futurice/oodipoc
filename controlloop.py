@@ -56,9 +56,6 @@ def find_position_by_category(category):
 
 def get_mir_status():
     # doesn't work yet 
-    command='curl -sb GET "http://mir.com/api/v2.0.0/status" -H "accept: application/json" -H "Authorization: Basic dHVydW5lbnRlOjNjNjA1ZmMyMjAwZjViNjY5NTBiZjRlM2NhM2ExZTMyMDQzYjExMWQ2ZGFkYTc3M2NjMjRiMjEwYmQxZmNkY2Q=" -H "Accept-Language: en_US" | egrep "state_text" | tr -d " " | cut -d\'"\' -f4'
-    state = subprocess.run(command)
-    print("State: " + state)
 
 def main():
 
