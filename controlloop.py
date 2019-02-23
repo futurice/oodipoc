@@ -13,9 +13,6 @@ import subprocess
 import sqlite3
 from sqlite3 import Error
 
-__author__ = "Teemu Turunen"
-__license__ = "MIT"
-
 def syntax(execname):
     print("Syntax: %s" % execname)
     sys.exit(1)
@@ -93,15 +90,21 @@ def main():
         # wait for a mission
 
         try:
+            # if there's a category.txt we have a mission
             f = open("category.txt", "r")
             category = f.readline()
+            # the category should be mapped to a physical oodi position recognised by the mir robot
             position = str(find_position_by_category(category))
-            print("Position for category " + category + " is " + position) 
+            # if we have a position, we can create a mission
             modify_mir_mission(position)
+            # once we have a mission we can run it
+
+            # TODO: a mission loop that checks mir status and acts accordingly 
 
         except IOError:
             print("Waiting for a mission ...", file=sys.stderr)
 
+        # check every second whether we're on a mission
         time.sleep(1)
         subprocess.run("clear") 
 
