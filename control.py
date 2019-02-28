@@ -7,6 +7,7 @@ https://github.com/futurice/oodipoc
 
 from __future__ import print_function
 
+import os
 import sys
 import time
 import subprocess
@@ -73,15 +74,23 @@ def main():
 
         print("checking if on a mission")
 
-        # ON A MISSION? if yes, call the related logic in move.py, and skip cycle
+        ### ON A MISSION? if yes, call the related logic in move.py, and skip cycle
+
         if robot_status == 'mission':
-          move.move()
+          mir_status = move.move()
+          print("mir status " + mir_status)
+
+          if mir_status == 'Ready':
+              print("mission accomplished")
+              robot_status = "idle"
+
           time.sleep(1)           
           continue
 
         print("checking new mission")
 
-        # NEW MISSION AVAILABLE? if there's a category.txt file, we have a new mission (placeholder implementation)
+        ### NEW MISSION AVAILABLE? if there's a category.txt file, we have a new mission (placeholder implementation)
+
         try:
             f = open("category.txt", "r")
             category = f.readline()
@@ -100,18 +109,26 @@ def main():
             # set the robot status to be on a mission
             robot_status = 'mission'
 
+            # delete the category.txt file
+            os.remove("category.txt")
+
+            # give the MiR a few seconds to react so we enter the correct state (mission executing)
+            time.sleep(3)
+
             continue
 
         except IOError:
             print("checking idle")
 
-        # NO MISSIONS? let's call the related logic in idle.py to attract customers
+        ### NO MISSIONS? let's call the related logic in idle.py to attract customers
+
         if robot_status == 'idle':
           print("attracting customers")
           time.sleep(1)
           continue
 
-        # NO STATUS, NO NEW MISSION? let's send the robot back to the homebase
+        ### NO STATUS, NO NEW MISSION? let's send the robot back to the homebase
+
         print("no status, back to home")
         time.sleep(1)
         continue

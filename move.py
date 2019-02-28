@@ -21,4 +21,11 @@ def syntax(execname):
 def move():
 
     status = mir_calls.get_mir_status()
-    print("robot status: " + status)
+
+    if status == 'Executing':
+         print("we are on a mission")
+
+    if status == 'Ready':
+         print("we are not on a mission anymore")
+
+    return status
