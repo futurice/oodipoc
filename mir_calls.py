@@ -24,6 +24,20 @@ def get_headers():
     headers = {'accept': 'application/json', 'Authorization': auth, 'Accept-Language': 'en_US', 'Content-Type': 'application/json'}
     return headers
 
+def add_to_mission_queue(mission = "beb5b742-341b-11e9-a33f-94c691a3a93e"):
+    
+    # add a mission to the mission queue (default is return to homebase)
+
+    url = 'http://mir.com/api/v2.0.0/mission_queue'
+    headers = get_headers()
+
+    data = {
+    "mission_id": mission,
+    "priority": 0
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+
 def get_mir_status():
 
     # get the current status from the mir robot 
@@ -38,6 +52,8 @@ def get_mir_status():
 def delete_mir_move_action():
 
     # delete a certain action from our move-to-location mir mission via curl call to rest api
+
+    print("delete mir move called")
 
     url = 'http://mir.com/api/v2.0.0/missions/2e066786-3424-11e9-954b-94c691a3a93e/actions/11111111-1111-1111-1111-111111111111'
     headers = get_headers()
@@ -55,8 +71,11 @@ def add_mir_move_action(position = "0b676baa-3423-11e9-954b-94c691a3a93e"):
 
     # add a move action to a defined location into our move-to-location mir mission via curl call to rest api
 
+    print("add mir move action called")
+
     url = "http://mir.com/api/v2.0.0/missions/2e066786-3424-11e9-954b-94c691a3a93e/actions"
     headers = get_headers()
+
     data = {
     "action_type": "move", 
     "guid": "11111111-1111-1111-1111-111111111111", 
@@ -64,11 +83,11 @@ def add_mir_move_action(position = "0b676baa-3423-11e9-954b-94c691a3a93e"):
     "parameters": [ 
       { 
         "id": "position", 
-        "value": "0b676baa-3423-11e9-954b-94c691a3a93e" 
+        "value": position
       }, 
       { 
         "id": "retries", 
-        "value": 1  
+        "value": 10 
       }, 
       { 
          "id": "distance_threshold", 
@@ -122,7 +141,9 @@ def add_mir_reaction_sound(sound = "45f02254-d6a5-11e8-8995-94c691a3e21e", prior
     response = requests.post(url, headers=headers, json=data)
 
 def modify_mir_mission(position):
+
     # todo make use of the mir mission modifying calls to setup our move-to-location mir mission to match the book/category location
+
     delete_mir_move_action()
     add_mir_move_action(position)
-    get_mir_status()
+    #get_mir_status()
