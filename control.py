@@ -16,6 +16,7 @@ from sqlite3 import Error
 
 import mir_calls
 import move
+import idle
 
 def syntax(execname):
     print("Syntax: %s" % execname)
@@ -69,9 +70,10 @@ def main():
     robot_status = "idle"
 
     print("ROBOT STATUS: " + robot_status)
+    counter = 0
 
     while True:
-
+        counter = counter + 1
         print("checking if on a mission")
 
         ### ON A MISSION? if yes, call the related logic in move.py, and skip cycle
@@ -124,6 +126,7 @@ def main():
 
         if robot_status == 'idle':
           print("attracting customers")
+          idle.idle(counter)
           time.sleep(1)
           continue
 
