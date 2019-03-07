@@ -16,8 +16,10 @@ from sqlite3 import Error
 from collections import deque
 
 import mir_calls
-import move
+import travel
 import idle
+import advise
+import feedback
 from emotions import Emotion
 
 #global variables counter (counts how many loops have executed), statushistory (places last 50 statuses in stack), emotions (robots emotion state)
@@ -83,22 +85,22 @@ def main():
     #create emotion table
     emotions = Emotion(9)
     emotions.create_area("angry", 0, 0, 2, 2)
-    emotions.create_area("frust", 0, 3, 2, 5)
+    emotions.create_area("frustrated", 0, 3, 2, 5)
     emotions.create_area("sad", 0, 6, 2, 8)
     emotions.create_area("bored", 3, 0, 5, 8)
-    emotions.create_area("excite", 6, 0, 8, 2)
+    emotions.create_area("excited", 6, 0, 8, 2)
     emotions.create_area("happy", 6, 3, 8 ,5)
     emotions.create_area("ok", 6, 6, 8, 8)
 
-    # primary status, possibilities are: idle = waiting for customers, mission = on a mission
-    robot_status = "idle"
+    # primary status, possibilities are: idle = waiting for customers, mission = on a mission, advising = telling where the book is, feedback = waiting for or reacting to feedback
+    robot_status = "feedback"
 
     print("ROBOT STATUS: " + robot_status)
 
     while True:
         #get robot status
-        status = mir_calls.get_mir_status()
-        #status = "Ready"
+        #status = mir_calls.get_mir_status()
+        status = "Ready"
 
         if (counter%1==0):
             statushistory.append(status)
@@ -107,10 +109,10 @@ def main():
 
         print("checking if on a mission")
 
-        ### ON A MISSION? if yes, call the related logic in move.py, and skip cycle
+        ### ON A MISSION? if yes, call the related logic in travel.py, and skip cycle
 
         if robot_status == 'mission':
-          mir_status = move.move()
+          mir_status = travel.move()
           print("mir status " + mir_status)
 
           if mir_status == 'Ready':
@@ -136,7 +138,7 @@ def main():
 
             # if we have a position, we can create a mission
             mir_calls.modify_mir_mission(position)
-            # add the modified move mission to the queue
+            # add the modified travel mission to the queue
             mir_calls.add_to_mission_queue("2e066786-3424-11e9-954b-94c691a3a93e")
 
             # set the robot status to be on a mission
@@ -156,10 +158,17 @@ def main():
         ### NO MISSIONS? let's call the related logic in idle.py to attract customers
 
         if robot_status == 'idle':
-          print("attracting customers")
           idle.idle(statushistory,emotions)
           time.sleep(1)
           continue
+
+        if robot_status == "advising":
+            advise.advise(emotions, "atColumn", "right")
+            time.sleep(1)
+            continue
+
+        if robot_status == "feedback":
+            feedback.feedback(emotions, 1, "good")
 
         ### NO STATUS, NO NEW MISSION? let's send the robot back to the homebase
 

@@ -35,7 +35,7 @@ def add_to_mission_queue(mission = "beb5b742-341b-11e9-a33f-94c691a3a93e"):
     "mission_id": mission,
     "priority": 0
     }
-
+    
     response = requests.post(url, headers=headers, json=data)
 
 def get_mir_status():

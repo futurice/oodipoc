@@ -21,30 +21,43 @@ def syntax(execname):
     sys.exit(1)
 
 def idle(statushistory, emotions):
+#idle module contains functions that are performed when idling, depending on the state of the robot.
+#functions are performed a bit differently depending on emotion.
 
-#this is a test
-
-    if emotions.get_emotion() == "bored":
-        print("I am bored")
-        if statushistory.count("Ready")==10:
-            #mir_calls.add_to_mission_queue("3ac4fc26-3f3f-11e9-9822-94c691a3a93e")
-            print("I AM SO SO BORED")
+   
+    if statushistory.count("Ready")%12:
+        displayEmotion(emotions)
+        #print("customers attracted")
     
-    if statushistory.count("Ready")==12:
+    if statushistory.count("Ready")%20:
+        attractCustomers(emotions)
+        #print("emotion displayed")
+
+
+def attractCustomers(emotions):
+    #TODO
+    #mir_calls.add_to_mission_queue("3ac4fc26-3f3f-11e9-9822-94c691a3a93e")
+    emotions.mod_emotion(0,-1)
+    print("attracting customers")
+
+
+def displayEmotion(emotions):
+    print("displaying emotion")
+    if emotions.get_emotion() in ("frustrated", "angry"):
+        #TODO mir mission
+        print("in frustrated or angry")
+        print("my emotion is")
+        print(emotions.get_emotion())
         emotions.mod_emotion(0,-1)
-        print("emotions were modded EXTREME BOREDOM")
-
-    
-
-
-"""
-def idle():
-    if (statushistory.count("ready")>20):
-        emotions.set_emotion(-1)
-        mir_emotions.little_boredom()
-    elif (statushistory.count("ready")>40):
-        emotions.set_emotion(-1)
-        mir_emotions.big_boredom()
+    elif emotions.get_emotion() in ("sad", "bored"):
+        #TODO mir mission
+        print("in sad or bored")
+        print("my emotion is")
+        print(emotions.get_emotion())
+        emotions.mod_emotion(-1,-1)
     else:
-        return
-"""
+        #TODO mir mission
+        print("in happy excited or content")
+        print("my emotion is")
+        print(emotions.get_emotion())
+        emotions.mod_emotion(-1,-1)
