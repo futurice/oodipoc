@@ -13,18 +13,38 @@ import time
 import subprocess
 
 import mir_calls
+import emotions
+
 
 def syntax(execname):
     print("Syntax: %s" % execname)
     sys.exit(1)
 
-def idle(counter):
+def idle(statushistory, emotions):
 
-    status = mir_calls.get_mir_status()
+#this is a test
 
-    if status == 'Ready':
-         print("we are not on a mission anymore")
-         if counter==10:
-               mir_calls.add_to_mission_queue("6de599b2-3b4a-11e9-9f5c-94c691a3a93e")
+    if emotions.get_emotion() == "bored":
+        print("I am bored")
+        if statushistory.count("Ready")==10:
+            #mir_calls.add_to_mission_queue("3ac4fc26-3f3f-11e9-9822-94c691a3a93e")
+            print("I AM SO SO BORED")
+    
+    if statushistory.count("Ready")==12:
+        emotions.mod_emotion(0,-1)
+        print("emotions were modded EXTREME BOREDOM")
 
-    return status
+    
+
+
+"""
+def idle():
+    if (statushistory.count("ready")>20):
+        emotions.set_emotion(-1)
+        mir_emotions.little_boredom()
+    elif (statushistory.count("ready")>40):
+        emotions.set_emotion(-1)
+        mir_emotions.big_boredom()
+    else:
+        return
+"""

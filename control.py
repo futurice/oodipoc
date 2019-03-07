@@ -13,10 +13,18 @@ import time
 import subprocess
 import sqlite3
 from sqlite3 import Error
+from collections import deque
 
 import mir_calls
 import move
 import idle
+from emotions import Emotion
+
+#global variables counter (counts how many loops have executed), statushistory (places last 50 statuses in stack), emotions (robots emotion state)
+global counter
+global statushistory
+global emotions
+
 
 def syntax(execname):
     print("Syntax: %s" % execname)
@@ -66,14 +74,37 @@ def find_position_by_category(category):
 
 def main():
 
+    #set counter to 0
+    counter = 0
+
+    #create stack for status histories
+    statushistory = deque([],50)
+
+    #create emotion table
+    emotions = Emotion(9)
+    emotions.create_area("angry", 0, 0, 2, 2)
+    emotions.create_area("frust", 0, 3, 2, 5)
+    emotions.create_area("sad", 0, 6, 2, 8)
+    emotions.create_area("bored", 3, 0, 5, 8)
+    emotions.create_area("excite", 6, 0, 8, 2)
+    emotions.create_area("happy", 6, 3, 8 ,5)
+    emotions.create_area("ok", 6, 6, 8, 8)
+
     # primary status, possibilities are: idle = waiting for customers, mission = on a mission
     robot_status = "idle"
 
     print("ROBOT STATUS: " + robot_status)
-    counter = 0
 
     while True:
+        #get robot status
+        status = mir_calls.get_mir_status()
+        #status = "Ready"
+
+        if (counter%1==0):
+            statushistory.append(status)
+        #print(statushistory)
         counter = counter + 1
+
         print("checking if on a mission")
 
         ### ON A MISSION? if yes, call the related logic in move.py, and skip cycle
@@ -126,7 +157,7 @@ def main():
 
         if robot_status == 'idle':
           print("attracting customers")
-          idle.idle(counter)
+          idle.idle(statushistory,emotions)
           time.sleep(1)
           continue
 
