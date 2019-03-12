@@ -67,7 +67,7 @@ def delete_mir_reaction_sound_action():
     headers = get_headers()
     response = requests.delete(url, headers=headers)
 
-def add_mir_move_action(position = "0b676baa-3423-11e9-954b-94c691a3a93e"):
+def add_mir_move_action(positionguid = "0b676baa-3423-11e9-954b-94c691a3a93e"):
 
     # add a move action to a defined location into our move-to-location mir mission via curl call to rest api
 
@@ -83,7 +83,7 @@ def add_mir_move_action(position = "0b676baa-3423-11e9-954b-94c691a3a93e"):
     "parameters": [ 
       { 
         "id": "position", 
-        "value": position
+        "value": positionguid
       }, 
       { 
         "id": "retries", 
