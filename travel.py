@@ -23,9 +23,9 @@ def move():
     status = mir_calls.get_mir_status()
 
     if status == 'Executing':
-         print("we are on a mission")
+         print("debug: we are on a mission")
 
     if status == 'Ready':
-         print("we are not on a mission anymore")
+         print("debug: we are not on a mission anymore")
 
     return status

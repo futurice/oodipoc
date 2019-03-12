@@ -47,12 +47,33 @@ def create_connection(db_file):
 
     return None
 
-def find_position_by_category(category):
+def find_side_by_category(category, type):
     database = "/Users/ttur/Documents/oodipoc/mir.db"
     # create a database connection
     conn = create_connection(database)
 
-    print("we have connection")
+    print("debug: there is a database connection")
+
+    cur = conn.cursor()
+
+    if type == "shelf": 
+        cur.execute('''SELECT guid FROM shelfpositions WHERE minCategoryLeft <= ? AND maxCategoryLeft >= ?''', (category,category))
+    elif type == "column":
+        cur.execute('''SELECT guid FROM columnpositions WHERE minCategoryLeft <= ? AND maxCategoryLeft >= ?''', (category,category))
+
+    rows = cur.fetchall()
+
+    if len(rows) > 0:
+        return "left"
+
+    return "right"
+
+def find_position_by_category(category, type):
+    database = "/Users/ttur/Documents/oodipoc/mir.db"
+    # create a database connection
+    conn = create_connection(database)
+
+    print("debug: there is a database connection")
 
     """
     Query tasks by priority
@@ -61,15 +82,15 @@ def find_position_by_category(category):
     :return:
     """
     cur = conn.cursor()
-    cat = category
-    cur.execute('''SELECT position FROM positions WHERE category = ?''', (cat,))
 
-    print("we have executed the select")
+    if type == "shelf": 
+        cur.execute('''SELECT guid FROM shelfpositions WHERE (minCategoryLeft <= ? AND maxCategoryLeft >= ?) OR (minCategoryRight <= ? AND maxCategoryRight >= ?)''', (category,category,category,category))
+        print("debug: SQL select has been executed to find the shelf position guid")
+    elif type == "column":
+        cur.execute('''SELECT guid FROM columnpositions WHERE (minCategoryLeft <= ? AND maxCategoryLeft >= ?) OR (minCategoryRight <= ? AND maxCategoryRight >= ?)''', (category,category,category,category))
+        print("debug: SQL select has been executed to find the column position guid")
 
     rows = cur.fetchall()
-
-    print(rows)
-    print("we have fetched rows")
 
     for row in rows:
       return row[0]
@@ -99,30 +120,68 @@ def main():
 
     while True:
         #get robot status
-        #status = mir_calls.get_mir_status()
-        status = "Ready"
+        status = mir_calls.get_mir_status()
 
         if (counter%1==0):
             statushistory.append(status)
-        #print(statushistory)
+
         counter = counter + 1
 
-        print("checking if on a mission")
+        print("debug: checking if we are on a mission")
 
         ### ON A MISSION? if yes, call the related logic in travel.py, and skip cycle
 
-        if robot_status == 'mission':
-          mir_status = travel.move()
-          print("mir status " + mir_status)
+        if robot_status == 'shelfmission':
+            mir_status = travel.move()
+            print("debug: shelf mission in progress, mir state: " + mir_status)
 
-          if mir_status == 'Ready':
-              print("mission accomplished")
-              robot_status = "idle"
+            if mir_status == 'Ready':
+                print("debug: shelf-mission has been accomplished")
+  
+                print("debug: wait for 5 seconds")
+                # FLASK: display arrow to left or right
+                side = find_side_by_category(category, "column")
+                print("debug: the book could be on the " + side + " side")
+                time.sleep(5)
 
-          time.sleep(1)           
-          continue
+                print("debug: move to the correct column")
+                positionguid = str(find_position_by_category(category, "column"))
+                print("debug: position guid for category column from database is " + positionguid)
 
-        print("checking new mission")
+                # if we have a position, we can create a mission
+                mir_calls.modify_mir_mission(positionguid)
+                # add the modified travel mission to the queue
+                mir_calls.add_to_mission_queue("2e066786-3424-11e9-954b-94c691a3a93e")
+
+                # set the robot status to be on a mission
+                robot_status = 'columnmission'
+              
+                # give the MiR a few seconds to react so we enter the correct state (mission executing)
+                time.sleep(3)
+
+            time.sleep(1)
+            continue
+
+        if robot_status == 'columnmission':
+            mir_status = travel.move()
+            print("debug: column mission in progress, mir state: " + mir_status)
+
+            if mir_status == 'Ready':
+                print("debug: column-mission has been accomplished")
+                print("debug: wait for 5 seconds")
+                # FLASK: display arrow to left or right
+                side = find_side_by_category(category, "column")
+                print("debug: the book could be on the " + side + " side")
+                time.sleep(5)
+
+                # TODO: move one meter (?) forward 
+
+                robot_status = 'idle'
+
+            time.sleep(1)
+            continue
+
+        print("debug: checking if we have a new mission")
 
         ### NEW MISSION AVAILABLE? if there's a category.txt file, we have a new mission (placeholder implementation)
 
@@ -132,17 +191,17 @@ def main():
             category = category.rstrip('\n')
 
             # the category should be mapped to a physical oodi position recognised by the mir robot
-            print("category is " + category)
-            position = str(find_position_by_category(category))
-            print("position is " + position)
+            print("debug: received target category is " + category)
+            positionguid = str(find_position_by_category(category, "shelf"))
+            print("debug: position guid for category shelf from database is " + positionguid)
 
             # if we have a position, we can create a mission
-            mir_calls.modify_mir_mission(position)
+            mir_calls.modify_mir_mission(positionguid)
             # add the modified travel mission to the queue
             mir_calls.add_to_mission_queue("2e066786-3424-11e9-954b-94c691a3a93e")
 
             # set the robot status to be on a mission
-            robot_status = 'mission'
+            robot_status = 'shelfmission'
 
             # delete the category.txt file
             os.remove("category.txt")
@@ -153,7 +212,7 @@ def main():
             continue
 
         except IOError:
-            print("checking idle")
+            print("debug: checking if we are idle")
 
         ### NO MISSIONS? let's call the related logic in idle.py to attract customers
 
@@ -172,7 +231,7 @@ def main():
 
         ### NO STATUS, NO NEW MISSION? let's send the robot back to the homebase
 
-        print("no status, back to home")
+        print("debug: no status, return to home")
         time.sleep(1)
         continue
 
