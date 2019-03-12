@@ -47,13 +47,18 @@ def get_mir_status():
 
     response = requests.get(url, headers=headers)
     json_data = json.loads(response.text)
-    return json_data["state_text"]
+    try:
+    	return json_data["state_text"]
+    except KeyError as error:
+        print("debug: got KeyError trying to read MiR status")
+        print(json_data)
+        return "status-fetch-error"
 
 def delete_mir_move_action():
 
     # delete a certain action from our move-to-location mir mission via curl call to rest api
 
-    print("delete mir move called")
+    print("debug: delete mir move action called")
 
     url = 'http://mir.com/api/v2.0.0/missions/2e066786-3424-11e9-954b-94c691a3a93e/actions/11111111-1111-1111-1111-111111111111'
     headers = get_headers()
@@ -71,7 +76,7 @@ def add_mir_move_action(positionguid = "0b676baa-3423-11e9-954b-94c691a3a93e"):
 
     # add a move action to a defined location into our move-to-location mir mission via curl call to rest api
 
-    print("add mir move action called")
+    print("debug: add mir move action called")
 
     url = "http://mir.com/api/v2.0.0/missions/2e066786-3424-11e9-954b-94c691a3a93e/actions"
     headers = get_headers()
