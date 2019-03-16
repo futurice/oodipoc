@@ -28,6 +28,8 @@ def add_to_mission_queue(mission = "beb5b742-341b-11e9-a33f-94c691a3a93e"):
     
     # add a mission to the mission queue (default is return to homebase)
 
+    # 3ac4fc26-3f3f-11e9-9822-94c691a3a93e is relative X move 1 meter
+
     url = 'http://mir.com/api/v2.0.0/mission_queue'
     headers = get_headers()
 

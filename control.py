@@ -174,8 +174,21 @@ def main():
                 print("debug: the book could be on the " + side + " side")
                 time.sleep(5)
 
-                # TODO: move one meter (?) forward 
+                # move forward one meter to make room for the customer
+                mir_calls.add_to_mission_queue("3ac4fc26-3f3f-11e9-9822-94c691a3a93e")
+                time.sleep(10) 
 
+                # TODO ask for feedback!
+                mir_calls.add_to_mission_queue("beb5b742-341b-11e9-a33f-94c691a3a93e")
+                robot_status = 'homing'
+
+        if robot_status == 'homing':
+            mir_status = travel.move()
+            print("debug: homing in progress, mir state: " + mir_status)
+
+            if mir_status == 'Ready': 
+                print("debug: homing has been accomplished")
+                print("debug: enter idle loop")
                 robot_status = 'idle'
 
             time.sleep(1)
