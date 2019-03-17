@@ -79,9 +79,27 @@ def get_book_details(bipurl):
     json_data = json.loads(response.text)
     return json_data
 
-def get_volume_details():
+def is_book_on_shelf_in_oodi(bibId):
+    json_data = get_book_details("https://kirjtuo1.helmet.fi/iii/sierra-api/v5/items?bibIds=" + bibId)
+
+    for element in json_data:
+        for value in json_data['entries']:
+                         
+            if (value['location']['name'] == 'Oodi' or value['location']['name'] == 'Oodi aik'):
+                code = value['status']['code']
+                display = value['status']['display']
+
+                if (code == '-' and display == 'ON SHELF'):
+                    try: 
+                        duedate = value['status']['duedate']
+                    except KeyError:
+                        return "yes"
+
+    return "no"
+
+def get_volume_details(bipurl):
     token = get_sierra_auth_token()
-    url = 'https://kirjtuo1.helmet.fi/iii/sierra-api/v5/items/1038544'
+    url = bipurl
     headers = {'Authorization': token}
     response = requests.get(url, headers=headers)
     json_data = json.loads(response.text)

@@ -181,6 +181,7 @@ def main():
                 # TODO ask for feedback!
                 mir_calls.add_to_mission_queue("beb5b742-341b-11e9-a33f-94c691a3a93e")
                 robot_status = 'homing'
+                time.sleep(5)
 
         if robot_status == 'homing':
             mir_status = travel.move()
@@ -208,9 +209,22 @@ def main():
             positionguid = str(find_position_by_category(category, "shelf"))
             print("debug: position guid for category shelf from database is " + positionguid)
 
+
             # if we have a position, we can create a mission
             mir_calls.modify_mir_mission(positionguid)
-            # add the modified travel mission to the queue
+
+            # let's drive to the aisle opening first
+            mir_calls.add_to_mission_queue("1746d684-48cb-11e9-a2ea-94c691a3a93e")
+            time.sleep(2)
+
+            # if the target is on the latter half of the shelves, mir needs another waypoint, else it chooses a bad route
+            # doesn't work yet?
+            if float(category) > 519.9:
+               print("debug: adding a second waypoint mission, since the category is higher than 519.9 ("+ category +")")
+               mir_calls.add_to_mission_queue("1516eff5-48d1-11e9-a2ea-94c691a3a93e")
+               time.sleep(2)
+
+            # finally add the modified shelf/column mission to the queue
             mir_calls.add_to_mission_queue("2e066786-3424-11e9-954b-94c691a3a93e")
 
             # set the robot status to be on a mission
