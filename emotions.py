@@ -31,7 +31,6 @@ class Emotion:
 
     #Check index not out of bounds
     def clamp(self, clampthis):
-        print (max(min(self.maximum, clampthis), self.minimum))
         return max(min(self.maximum, clampthis), self.minimum)
 
     #Modify current emotion
@@ -39,7 +38,6 @@ class Emotion:
         self.current_x = self.clamp(self.current_x + x_increment)
         self.current_y = self.clamp(self.current_y + y_increment)
         self.current = [self.current_x, self.current_y]
-        print(self.current)
         return self.current
 
    
