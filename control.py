@@ -47,6 +47,29 @@ def create_connection(db_file):
 
     return None
 
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
+def find_books_from_local_database(searchtext):
+    database = "/Users/ttur/Documents/oodipoc/mir.db"
+    # create a database connection
+    conn = create_connection(database)
+    conn.row_factory = dict_factory
+
+    searchtext = searchtext.lower()
+
+    print("debug: there is a database connection")
+
+    cur = conn.cursor()
+
+    cur.execute("SELECT DISTINCT title, author FROM books WHERE lower(title) LIKE ?", ('%'+searchtext+'%',))
+
+    rows = cur.fetchall()
+    return rows
+
 def find_side_by_category(category, type):
     database = "/Users/ttur/Documents/oodipoc/mir.db"
     # create a database connection
@@ -67,6 +90,26 @@ def find_side_by_category(category, type):
         return "left"
 
     return "right"
+
+def check_for_new_mission():
+    database = "/Users/ttur/Documents/oodipoc/mir.db"
+    conn = create_connection(database)
+    cur = conn.cursor()
+ 
+    cur.execute("SELECT callnumber FROM missions WHERE status = 'new'") 
+    rows = cur.fetchall()
+
+    for row in rows:
+      return row[0]
+
+def change_mission_status():
+    database = "/Users/ttur/Documents/oodipoc/mir.db"
+    conn = create_connection(database)
+    cur = conn.cursor()
+
+    sql = "UPDATE missions SET status = 'old' WHERE status = 'new'"
+    cur.execute(sql)
+    conn.commit()
 
 def find_position_by_category(category, type):
     database = "/Users/ttur/Documents/oodipoc/mir.db"
@@ -197,18 +240,17 @@ def main():
 
         print("debug: checking if we have a new mission")
 
-        ### NEW MISSION AVAILABLE? if there's a category.txt file, we have a new mission (placeholder implementation)
+        ### NEW MISSION AVAILABLE? if there's a category entry in missions table with status new, we have a new mission
 
-        try:
-            f = open("category.txt", "r")
-            category = f.readline()
-            category = category.rstrip('\n')
+        category = check_for_new_mission()
+
+        if category is not None:
 
             # the category should be mapped to a physical oodi position recognised by the mir robot
             print("debug: received target category is " + category)
+            change_mission_status()
             positionguid = str(find_position_by_category(category, "shelf"))
             print("debug: position guid for category shelf from database is " + positionguid)
-
 
             # if we have a position, we can create a mission
             mir_calls.modify_mir_mission(positionguid)
@@ -217,29 +259,16 @@ def main():
             mir_calls.add_to_mission_queue("1746d684-48cb-11e9-a2ea-94c691a3a93e")
             time.sleep(2)
 
-            # if the target is on the latter half of the shelves, mir needs another waypoint, else it chooses a bad route
-            # doesn't work yet?
-            if float(category) > 519.9:
-               print("debug: adding a second waypoint mission, since the category is higher than 519.9 ("+ category +")")
-               mir_calls.add_to_mission_queue("1516eff5-48d1-11e9-a2ea-94c691a3a93e")
-               time.sleep(2)
-
             # finally add the modified shelf/column mission to the queue
             mir_calls.add_to_mission_queue("2e066786-3424-11e9-954b-94c691a3a93e")
 
             # set the robot status to be on a mission
             robot_status = 'shelfmission'
 
-            # delete the category.txt file
-            os.remove("category.txt")
-
             # give the MiR a few seconds to react so we enter the correct state (mission executing)
             time.sleep(3)
 
             continue
-
-        except IOError:
-            print("debug: checking if we are idle")
 
         ### NO MISSIONS? let's call the related logic in idle.py to attract customers
 
