@@ -16,7 +16,7 @@ class Emotion:
         self.current = self.center
         self.current_x = self.center[0]
         self.current_y = self.center[1]
-        self.maximum = self.size
+        self.maximum = self.size-1
         self.minimum = 0
 
     #Create area with certain name into emotion table
