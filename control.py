@@ -54,7 +54,7 @@ def dict_factory(cursor, row):
     return d
 
 def find_books_from_local_database(searchtext):
-    database = "/Users/ttur/Documents/oodipoc/mir.db"
+    database = "mir.db"
     # create a database connection
     conn = create_connection(database)
     conn.row_factory = dict_factory
@@ -71,7 +71,7 @@ def find_books_from_local_database(searchtext):
     return rows
 
 def find_side_by_category(category, type):
-    database = "/Users/ttur/Documents/oodipoc/mir.db"
+    database = "mir.db"
     # create a database connection
     conn = create_connection(database)
 
@@ -92,7 +92,7 @@ def find_side_by_category(category, type):
     return "right"
 
 def check_for_new_mission():
-    database = "/Users/ttur/Documents/oodipoc/mir.db"
+    database = "mir.db"
     conn = create_connection(database)
     cur = conn.cursor()
  
@@ -103,7 +103,7 @@ def check_for_new_mission():
       return row[0]
 
 def change_mission_status():
-    database = "/Users/ttur/Documents/oodipoc/mir.db"
+    database = "mir.db"
     conn = create_connection(database)
     cur = conn.cursor()
 
@@ -112,7 +112,7 @@ def change_mission_status():
     conn.commit()
 
 def find_position_by_category(category, type):
-    database = "/Users/ttur/Documents/oodipoc/mir.db"
+    database = "mir.db"
     # create a database connection
     conn = create_connection(database)
 

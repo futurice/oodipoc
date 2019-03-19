@@ -34,7 +34,7 @@ def get_sierra_auth_token():
 
 def search_shelved_books(searchtext):
     print(datetime.datetime.now())
-    database = "/Users/ttur/Documents/oodipoc/mir.db"
+    database = "mir.db"
     # create a database connection
     conn = create_connection(database)
     conn.row_factory = dict_factory
@@ -170,7 +170,7 @@ def create_connection(db_file):
     return None
 
 def get_included_callnumbers():
-    database = "/Users/ttur/Documents/oodipoc/mir.db"
+    database = "mir.db"
     # create a database connection
     conn = create_connection(database)
     conn.row_factory = dict_factory
@@ -222,7 +222,7 @@ def add_new_book_mission(bibId):
     insert_into_mission_table(callnumber)
 
 def insert_into_mission_table(callnumber):
-    database = "/Users/ttur/Documents/oodipoc/mir.db"
+    database = "mir.db"
     # create a database connection
     conn = create_connection(database)
     cur = conn.cursor()
