@@ -16,7 +16,7 @@ class Emotion:
         self.current = self.center
         self.current_x = self.center[0]
         self.current_y = self.center[1]
-        self.maximum = self.size
+        self.maximum = self.size-1
         self.minimum = 0
 
     #Create area with certain name into emotion table
@@ -31,6 +31,7 @@ class Emotion:
 
     #Check index not out of bounds
     def clamp(self, clampthis):
+        print (max(min(self.maximum, clampthis), self.minimum))
         return max(min(self.maximum, clampthis), self.minimum)
 
     #Modify current emotion
@@ -38,6 +39,7 @@ class Emotion:
         self.current_x = self.clamp(self.current_x + x_increment)
         self.current_y = self.clamp(self.current_y + y_increment)
         self.current = [self.current_x, self.current_y]
+        print(self.current)
         return self.current
 
    
