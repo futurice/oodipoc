@@ -8,13 +8,13 @@ global ser
 #remember to check if port is correct
 ser = serial.Serial("/dev/cu.usbmodem1441",baudrate=19200, timeout = 1)
 
-def lookLeft():
+def lookRight():
     ser.write(bytes("800", encoding="ascii"))
     print("I looked left")
     time.sleep(2)
     #ser.close()
 
-def lookRight():
+def lookLeft():
     ser.write(bytes("-800", encoding="ascii"))
     print("I looked right")
     time.sleep(2)
