@@ -34,12 +34,25 @@ def advise(emotions, location, direction):
 
 
 def atShelf(emotions):
+    """
+    “Bling” we have arrived - https://freesound.org/people/newagesoup/sounds/350359/ 
+    Look at shelf
+    Flash or display white light
+
+
+    """
     #TODO mir mission to point at shelf
     #TODO flask call
     print("pointing at shelf")
 
 
 def atColumn(emotions, direction):
+    """
+    “Bling” we have arrived - https://freesound.org/people/newagesoup/sounds/350359/ 
+    Look at column
+    Flash white light
+    """
+    
     #check which direction the column is in and point there
     print("at column")
 
