@@ -35,6 +35,21 @@ def idle(statushistory, emotions):
 
 
 def attractCustomers(emotions):
+    """
+    Randomize between:
+
+    Two Achoo - https://freesound.org/people/Reitanna/sounds/343921/ 
+    Scoot a bit back with each achoo, then roll slowly forward
+    Roll eyes all the way around with each achoo
+    Show purple light on achoo
+
+    Random chirping - https://freesound.org/people/radarflora/sounds/350690/ 
+    Roll around a bit
+    Look around a bit
+    Rainbow lights
+
+    """
+    
     #TODO
     #mir_calls.add_to_mission_queue("3ac4fc26-3f3f-11e9-9822-94c691a3a93e")
     emotions.mod_emotion(0,-1)
@@ -42,6 +57,31 @@ def attractCustomers(emotions):
 
 
 def displayEmotion(emotions):
+
+    """
+
+    Frustrated or angry
+
+    Annoyed beep - https://freesound.org/people/DontGoThere/sounds/255883/ (this should be slowed down)
+    Show red lights
+    Look left, look right
+
+
+    Sad or bored
+
+    Sad wobbling sound - https://freesound.org/people/pschrandt/sounds/428076/  (make sure this doesn’t play too loud)
+    Look at ground
+    Shake (as if shaking head)
+    Show blue light
+
+
+    Happy excited or content
+
+    happy chirping (when content) - https://freesound.org/people/Illud/sounds/271674/ 
+    Goes from side to side, looks to each side
+    Show green light
+    """
+
     print("displaying emotion")
     if emotions.get_emotion() in ("frustrated", "angry"):
         #TODO mir mission
