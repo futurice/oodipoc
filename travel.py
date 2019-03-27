@@ -20,48 +20,48 @@ def syntax(execname):
 
 def move():
 
-     """
-     “Bling” follow me - https://freesound.org/people/newagesoup/sounds/350359/ 
+    """
+    “Bling” follow me - https://freesound.org/people/newagesoup/sounds/350359/ 
 
 
 
-     Good
+    Good
 
-     Excited happy content or bored
+    Excited happy content or bored
 
-     Happy acknowledgement - https://freesound.org/people/plasterbrain/sounds/242855/ 
-     Move around a bit, flash rainbow lights
-
-
-     Else
-
-     Happy acknowledgement - https://freesound.org/people/plasterbrain/sounds/242855/ 
+    Happy acknowledgement - https://freesound.org/people/plasterbrain/sounds/242855/ 
+    Move around a bit, flash rainbow lights
 
 
-     Bad
+    Else
 
-     Excited happy content or bored
-
-     Not that great feedback “doop” - https://freesound.org/people/Intimidated/sounds/74233/
-     Look down
-     Flash blue lights
-
-     Sad
-
-     Sad wobbling sound - https://freesound.org/people/pschrandt/sounds/428076/ 
-     “Shake head”
-     Look down
-     Flash blue lights
+    Happy acknowledgement - https://freesound.org/people/plasterbrain/sounds/242855/ 
 
 
-     Else (angry)
+    Bad
 
-     Confused sound - https://freesound.org/people/RICHERlandTV/sounds/352378/ 
-     “Shake head”
-     Look around 
-     Flash red lights
+    Excited happy content or bored
 
-     """
+    Not that great feedback “doop” - https://freesound.org/people/Intimidated/sounds/74233/
+    Look down
+    Flash blue lights
+
+    Sad
+
+    Sad wobbling sound - https://freesound.org/people/pschrandt/sounds/428076/ 
+    “Shake head”
+    Look down
+    Flash blue lights
+
+
+    Else (angry)
+
+    Confused sound - https://freesound.org/people/RICHERlandTV/sounds/352378/ 
+    “Shake head”
+    Look around 
+    Flash red lights
+
+    """
 
     status = mir_calls.get_mir_status()
 

@@ -11,6 +11,8 @@ from __future__ import print_function
 import sys
 import time
 import subprocess
+import eyes
+import random
 
 import mir_calls
 import emotions
@@ -25,13 +27,11 @@ def idle(statushistory, emotions):
 #functions are performed a bit differently depending on emotion.
 
    
-    if statushistory.count("Ready")%12:
+    if not statushistory.count("Ready")%12:
         displayEmotion(emotions)
-        #print("customers attracted")
     
-    if statushistory.count("Ready")%20:
+    if not statushistory.count("Ready")%20:
         attractCustomers(emotions)
-        #print("emotion displayed")
 
 
 def attractCustomers(emotions):
@@ -51,10 +51,22 @@ def attractCustomers(emotions):
     """
     
     #TODO
-    #mir_calls.add_to_mission_queue("3ac4fc26-3f3f-11e9-9822-94c691a3a93e")
-    emotions.mod_emotion(0,-1)
-    print("attracting customers")
 
+    reaction = random.random() * 100
+
+    if reaction < 30:
+        mir_calls.add_to_mission_queue("f747a369-509c-11e9-9b99-94c691a3a93e")
+        emotions.mod_emotion(0,-1)
+        eyes.rollEyes() 
+    
+    if reaction >= 30:
+        eyes.lookLeft()
+        time.sleep(1)
+        eyes.lookRight()
+        time.sleep(1)
+        eyes.lookDown()
+
+    print("attracting customers")
 
 def displayEmotion(emotions):
 

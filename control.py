@@ -167,7 +167,7 @@ def main():
     emotions.create_area("ok", 6, 6, 8, 8)
 
     # primary status, possibilities are: idle = waiting for customers, mission = on a mission, advising = telling where the book is, feedback = waiting for or reacting to feedback
-    robot_status = "feedback"
+    robot_status = "idle"
 
     print("ROBOT STATUS: " + robot_status)
 
@@ -177,6 +177,7 @@ def main():
 
         if (counter%1==0):
             statushistory.append(status)
+            print("counter: " + str(counter) + " status: " + status);
 
         counter = counter + 1
 
