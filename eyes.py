@@ -6,7 +6,10 @@ import time
 
 global ser
 #remember to check if port is correct
-ser = serial.Serial("/dev/cu.usbmodem1441",baudrate=19200, timeout = 1)
+try:
+    ser = serial.Serial("/dev/ttyACM0",baudrate=19200, timeout = 1)
+except serial.SerialException:
+    print("Error: Arduino not available at ttyACM0")
 
 def lookRight():
     ser.write(bytes("800", encoding="ascii"))

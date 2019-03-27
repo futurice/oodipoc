@@ -34,7 +34,7 @@ def get_sierra_auth_token():
 
 def search_shelved_books(searchtext):
     print(datetime.datetime.now())
-    database = "mir.db"
+    database = "/home/furhatdemo/oodipoc/mir.db"
     # create a database connection
     conn = create_connection(database)
     conn.row_factory = dict_factory
@@ -130,7 +130,7 @@ def is_book_on_shelf_in_oodi(bibId):
                 display = value['status']['display']
                 callnumber = value['callNumber']
 
-                if (code == '-' and display == 'ON SHELF' and callnumber in callnumbers):
+                if (code == '-' and display == 'ON SHELF' and callnumber in callnumbers and float(callnumber) < 763.0):
                     try: 
                         duedate = value['status']['duedate']
                     except KeyError:
@@ -170,7 +170,7 @@ def create_connection(db_file):
     return None
 
 def get_included_callnumbers():
-    database = "mir.db"
+    database = "/home/furhatdemo/oodipoc/mir.db"
     # create a database connection
     conn = create_connection(database)
     conn.row_factory = dict_factory
@@ -222,7 +222,7 @@ def add_new_book_mission(bibId):
     insert_into_mission_table(callnumber)
 
 def insert_into_mission_table(callnumber):
-    database = "mir.db"
+    database = "/home/furhatdemo/oodipoc/mir.db"
     # create a database connection
     conn = create_connection(database)
     cur = conn.cursor()
@@ -231,6 +231,68 @@ def insert_into_mission_table(callnumber):
     cnumber = stripalpha.sub('', callnumber)
     status = 'new'
 
-    sql = "INSERT INTO missions (callnumber, status) VALUES (?, ?)"
+    sql = "INSERT INTO missions (callnumber, status, starttime) VALUES (?, ?, DateTime('now'))"
     cur.execute(sql, (cnumber, status))
     conn.commit()
+
+def update_midpoint_time():
+     
+    database = "/home/furhatdemo/oodipoc/mir.db"
+    # create a database connection
+    conn = create_connection(database)
+    cur = conn.cursor()
+    sql = "SELECT id FROM missions ORDER BY starttime DESC LIMIT 1"
+    cur.execute(sql)
+
+    rows = cur.fetchall()
+
+    for row in rows:
+        latest = int(row[0])
+
+    print(latest)
+
+    sql = "UPDATE missions SET midpointtime = DateTime('now') WHERE id = ?"
+    cur.execute(sql, (latest,))
+    conn.commit()
+
+def update_target_time():
+     
+    database = "/home/furhatdemo/oodipoc/mir.db"
+    # create a database connection
+    conn = create_connection(database)
+    cur = conn.cursor()
+    sql = "SELECT id FROM missions ORDER BY starttime DESC LIMIT 1"
+    cur.execute(sql)
+
+    rows = cur.fetchall()
+
+    for row in rows:
+        latest = int(row[0])
+
+    print(latest)
+
+    sql = "UPDATE missions SET targetpointtime = DateTime('now') WHERE id = ?"
+    cur.execute(sql, (latest,))
+    conn.commit()
+
+
+def update_home_time():
+     
+    database = "/home/furhatdemo/oodipoc/mir.db"
+    # create a database connection
+    conn = create_connection(database)
+    cur = conn.cursor()
+    sql = "SELECT id FROM missions ORDER BY starttime DESC LIMIT 1"
+    cur.execute(sql)
+
+    rows = cur.fetchall()
+
+    for row in rows:
+        latest = int(row[0])
+
+    print(latest)
+
+    sql = "UPDATE missions SET homepointtime = DateTime('now') WHERE id = ?"
+    cur.execute(sql, (latest,))
+    conn.commit()
+

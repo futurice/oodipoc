@@ -12,6 +12,7 @@ import sys
 import time
 import subprocess
 import sqlite3
+import eyes
 from sqlite3 import Error
 from collections import deque
 
@@ -20,6 +21,7 @@ import travel
 import idle
 import advise
 import feedback
+import sierra
 from emotions import Emotion
 
 #global variables counter (counts how many loops have executed), statushistory (places last 50 statuses in stack), emotions (robots emotion state)
@@ -87,9 +89,9 @@ def find_side_by_category(category, type):
     rows = cur.fetchall()
 
     if len(rows) > 0:
-        return "left"
+        return "l"
 
-    return "right"
+    return "r"
 
 def check_for_new_mission():
     database = "mir.db"
@@ -138,10 +140,18 @@ def find_position_by_category(category, type):
     for row in rows:
       return row[0]
 
+def switch_flask_view(view):
+    f = open("/home/furhatdemo/OodiUI/OodiUI/static/direction.txt", "w+")
+    f.write(view)
+    f.close()
+
 def main():
 
     #set counter to 0
     counter = 0
+
+    # is this a category-only mission
+    catmission = False
 
     #create stack for status histories
     statushistory = deque([],50)
@@ -182,15 +192,56 @@ def main():
                 print("debug: shelf-mission has been accomplished")
   
                 print("debug: wait for 5 seconds")
+
+
+                if catmission == True:
+
+                    print("DEBUG: catmission true, cat " + category);
+
+                    if category == '79000':
+                       switch_flask_view('r')                        
+
+                    if category == '46900':
+                       switch_flask_view('r')                        
+
+                    if category == '69110':
+                       switch_flask_view('lr')                        
+
+                    if category == '85000':
+                       switch_flask_view('r')                        
+
+                    if category == '99000':
+                       switch_flask_view('l')                        
+
+                    if category == '90000':
+                       switch_flask_view('l')                        
+
+                    time.sleep(10)
+                    mir_calls.add_to_mission_queue("beb5b742-341b-11e9-a33f-94c691a3a93e")
+                    robot_status = 'homing'
+                    time.sleep(2)
+                    #eyes.lookDown()
+                    catmission = False
+                    sierra.update_target_time()
+                    continue
+
                 # FLASK: display arrow to left or right
                 side = find_side_by_category(category, "column")
+                switch_flask_view(side)
                 print("debug: the book could be on the " + side + " side")
+
+               # if side == 'r':
+                    #eyes.lookLeft()
+
+                #if side == 'l':
+                    #eyes.lookRight()
+
                 time.sleep(5)
 
+                # the category should be mapped to a physical oodi position recognised by the mir robot
                 print("debug: move to the correct column")
                 positionguid = str(find_position_by_category(category, "column"))
                 print("debug: position guid for category column from database is " + positionguid)
-
                 # if we have a position, we can create a mission
                 mir_calls.modify_mir_mission(positionguid)
                 # add the modified travel mission to the queue
@@ -198,9 +249,10 @@ def main():
 
                 # set the robot status to be on a mission
                 robot_status = 'columnmission'
+                switch_flask_view("blank")
               
                 # give the MiR a few seconds to react so we enter the correct state (mission executing)
-                time.sleep(3)
+                time.sleep(2)
 
             time.sleep(1)
             continue
@@ -214,26 +266,41 @@ def main():
                 print("debug: wait for 5 seconds")
                 # FLASK: display arrow to left or right
                 side = find_side_by_category(category, "column")
+                switch_flask_view(side)
+                sierra.update_target_time()
+
                 print("debug: the book could be on the " + side + " side")
-                time.sleep(5)
+                time.sleep(10)
+                #switch_flask_view("blank")
 
                 # move forward one meter to make room for the customer
-                mir_calls.add_to_mission_queue("3ac4fc26-3f3f-11e9-9822-94c691a3a93e")
-                time.sleep(10) 
+                #mir_calls.add_to_mission_queue("3ac4fc26-3f3f-11e9-9822-94c691a3a93e")
+                #time.sleep(10) 
 
-                # TODO ask for feedback!
+                # TODO ask for feedback! maybe not?
                 mir_calls.add_to_mission_queue("beb5b742-341b-11e9-a33f-94c691a3a93e")
                 robot_status = 'homing'
+                #eyes.lookDown()
                 time.sleep(5)
+            
+            time.sleep(1)
+            continue
 
         if robot_status == 'homing':
             mir_status = travel.move()
             print("debug: homing in progress, mir state: " + mir_status)
 
+            switch_flask_view("home")
+
             if mir_status == 'Ready': 
                 print("debug: homing has been accomplished")
                 print("debug: enter idle loop")
+                switch_flask_view("home2")
                 robot_status = 'idle'
+                #eyes.lookLeft()
+                #eyes.lookRight()
+                #eyes.lookDown()
+                sierra.update_home_time()
 
             time.sleep(1)
             continue
@@ -246,18 +313,44 @@ def main():
 
         if category is not None:
 
+            # a quick hack to allow for the category missions
+            if category == '79000':
+                positionguid = 'aac480fd-44d5-11e9-b653-94c691a3a93e'
+                catmission = True
+
+            if category == '46900':
+                positionguid = '48e76bd3-44d4-11e9-b653-94c691a3a93e'
+                catmission = True
+
+            if category == '69110':
+                positionguid = '78795881-44d5-11e9-b653-94c691a3a93e'
+                catmission = True
+
+            if category == '85000':
+                positionguid = 'b955c6f0-4bb0-11e9-98e7-94c691a3a93e'
+                catmission = True
+
+            if category == '99000':
+                positionguid = 'd8585103-4bb0-11e9-98e7-94c691a3a93e'
+                catmission = True
+
+            if category == '90000':
+                positionguid = 'eb62e8a2-4bb0-11e9-98e7-94c691a3a93e'
+                catmission = True
+
+            if catmission == True:
+                print("DEBUG: catmission is true!")
+                change_mission_status()
+
             # the category should be mapped to a physical oodi position recognised by the mir robot
-            print("debug: received target category is " + category)
-            change_mission_status()
-            positionguid = str(find_position_by_category(category, "shelf"))
-            print("debug: position guid for category shelf from database is " + positionguid)
+            if catmission == False:
+                print("debug: received target category is " + category)
+                change_mission_status()
+                positionguid = str(find_position_by_category(category, "shelf"))
+                print("debug: position guid for category shelf from database is " + positionguid)
 
             # if we have a position, we can create a mission
             mir_calls.modify_mir_mission(positionguid)
-
-            # let's drive to the aisle opening first
-            mir_calls.add_to_mission_queue("1746d684-48cb-11e9-a2ea-94c691a3a93e")
-            time.sleep(2)
 
             # finally add the modified shelf/column mission to the queue
             mir_calls.add_to_mission_queue("2e066786-3424-11e9-954b-94c691a3a93e")
@@ -267,6 +360,9 @@ def main():
 
             # give the MiR a few seconds to react so we enter the correct state (mission executing)
             time.sleep(3)
+
+            # eye movement :D
+            #eyes.topRoll()
 
             continue
 
@@ -288,7 +384,9 @@ def main():
         ### NO STATUS, NO NEW MISSION? let's send the robot back to the homebase
 
         print("debug: no status, return to home")
-        time.sleep(1)
+        mir_calls.add_to_mission_queue("beb5b742-341b-11e9-a33f-94c691a3a93e")
+        robot_status = 'homing'
+        time.sleep(2)
         continue
 
 if __name__ == "__main__":
