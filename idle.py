@@ -59,14 +59,14 @@ def attractCustomers(emotions):
         emotions.mod_emotion(2,2)
         eyes.rollEyes()
 
-    if reaction >= 10 and <20:
+    if reaction >= 10 and reaction < 20:
         eyes.lookRight()
         time.sleep(2)
         eyes.lookUp()
         time.sleep(5)
         eyes.lookDown
     
-    if reaction >= 20 and <50:
+    if reaction >= 20 and reaction < 50:
         eyes.lookLeft()
         time.sleep(1)
         eyes.lookRight()
