@@ -54,17 +54,30 @@ def attractCustomers(emotions):
 
     reaction = random.random() * 100
 
-    if reaction < 30:
+    if reaction < 10:
         mir_calls.add_to_mission_queue("f747a369-509c-11e9-9b99-94c691a3a93e")
-        emotions.mod_emotion(0,-1)
-        eyes.rollEyes() 
+        emotions.mod_emotion(2,2)
+        eyes.rollEyes()
+
+    if reaction >= 10 and <20:
+        eyes.lookRight()
+        time.sleep(2)
+        eyes.lookUp()
+        time.sleep(5)
+        eyes.lookDown
     
-    if reaction >= 30:
+    if reaction >= 20 and <50:
         eyes.lookLeft()
         time.sleep(1)
         eyes.lookRight()
         time.sleep(1)
         eyes.lookDown()
+
+    if reaction >= 50:
+        eyes.lookRight()
+        time.sleep(3)
+        eyes.lookDown()
+        
 
     print("attracting customers")
 
@@ -100,16 +113,22 @@ def displayEmotion(emotions):
         print("in frustrated or angry")
         print("my emotion is")
         print(emotions.get_emotion())
+        eyes.rollEyes()
         emotions.mod_emotion(0,-1)
+
     elif emotions.get_emotion() in ("sad", "bored"):
         #TODO mir mission
         print("in sad or bored")
         print("my emotion is")
         print(emotions.get_emotion())
+        eyes.topRoll()
         emotions.mod_emotion(-1,-1)
+        
+
     else:
         #TODO mir mission
         print("in happy excited or content")
         print("my emotion is")
         print(emotions.get_emotion())
+        eyes.topRoll()
         emotions.mod_emotion(-1,-1)
