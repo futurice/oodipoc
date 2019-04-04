@@ -26,12 +26,14 @@ def idle(statushistory, emotions):
 #idle module contains functions that are performed when idling, depending on the state of the robot.
 #functions are performed a bit differently depending on emotion.
 
-   
-    if not statushistory.count("Ready")%12:
+    percentage = random.random() * 100
+
+    if percentage < 20:
         displayEmotion(emotions)
     
-    if not statushistory.count("Ready")%20:
+    if percentage >= 20 and percentage < 40:
         attractCustomers(emotions)
+
 
 
 def attractCustomers(emotions):
@@ -59,14 +61,14 @@ def attractCustomers(emotions):
         emotions.mod_emotion(2,2)
         eyes.rollEyes()
 
-    if reaction >= 10 and <20:
+    if reaction >= 10 and reaction < 20:
         eyes.lookRight()
         time.sleep(2)
         eyes.lookUp()
         time.sleep(5)
         eyes.lookDown
     
-    if reaction >= 20 and <50:
+    if reaction >= 20 and reaction < 50:
         eyes.lookLeft()
         time.sleep(1)
         eyes.lookRight()
