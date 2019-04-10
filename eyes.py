@@ -12,35 +12,41 @@ except serial.SerialException:
     print("Error: Arduino not available at ttyACM0")
 
 def lookRight():
+    print("I look right")
     ser.write(bytes("800", encoding="ascii"))
-    print("I looked left")
     time.sleep(2)
-    #ser.close()
 
 def lookLeft():
+    print("I look left")
     ser.write(bytes("-800", encoding="ascii"))
-    print("I looked right")
     time.sleep(2)
-    #ser.close()
 
 def lookDown():
+    print("I look down")
     ser.write(bytes("0", encoding="ascii"))
-    print("I looked down")
     time.sleep(2)
 
 def lookUp():
+    print("I look up")
     ser.write(bytes("1600", encoding="ascii"))
-    print("I looked up")
     time.sleep(2)
 
 def rollEyes():
+    print("Rolling eyes")
     ser.write(bytes("5000", encoding="ascii"))
-    print("I looked up")
     time.sleep(2)
+    ser.write(bytes("0", encoding="ascii"))
+    time.sleep(2)
+
+def rollEyesAchoo():
+    print("Rolling eyes")
+    ser.write(bytes("5000", encoding="ascii"))
+    time.sleep(2.5)
     ser.write(bytes("0", encoding="ascii"))
     time.sleep(2)
 
 def topRoll():
+    print("Toproll!")
     ser.write(bytes("1900", encoding="ascii"))
     time.sleep(2)
     ser.write(bytes("1300", encoding="ascii"))
@@ -48,6 +54,8 @@ def topRoll():
     ser.write(bytes("1900", encoding="ascii"))
     time.sleep(2)
     ser.write(bytes("1300", encoding="ascii"))
+    time.sleep(2)
+    ser.write(bytes("0", encoding="ascii"))
     time.sleep(2)
 
 def eyesInput(): 

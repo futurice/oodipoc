@@ -27,6 +27,7 @@ def idle(statushistory, emotions):
 #functions are performed a bit differently depending on emotion.
 
     percentage = random.random() * 100
+    print("random activity percentage: " + str(percentage))
 
     if percentage < 20:
         displayEmotion(emotions)
@@ -56,17 +57,21 @@ def attractCustomers(emotions):
 
     reaction = random.random() * 100
 
-    if reaction < 10:
-        mir_calls.add_to_mission_queue("f747a369-509c-11e9-9b99-94c691a3a93e")
+    print("random reaction percentage: " + str(reaction))
+
+    if reaction < 5:
+        achoo()
         emotions.mod_emotion(2,2)
-        eyes.rollEyes()
+
+    if reaction >= 5 and reaction < 10:
+        chirping()
 
     if reaction >= 10 and reaction < 20:
         eyes.lookRight()
         time.sleep(2)
         eyes.lookUp()
-        time.sleep(5)
-        eyes.lookDown
+        time.sleep(3)
+        eyes.lookDown()
     
     if reaction >= 20 and reaction < 50:
         eyes.lookLeft()
@@ -115,7 +120,7 @@ def displayEmotion(emotions):
         print("in frustrated or angry")
         print("my emotion is")
         print(emotions.get_emotion())
-        eyes.rollEyes()
+        emotionAngry()
         emotions.mod_emotion(0,-1)
 
     elif emotions.get_emotion() in ("sad", "bored"):
@@ -134,3 +139,17 @@ def displayEmotion(emotions):
         print(emotions.get_emotion())
         eyes.topRoll()
         emotions.mod_emotion(-1,-1)
+
+def achoo():
+    mir_calls.add_to_mission_queue("f747a369-509c-11e9-9b99-94c691a3a93e")
+    eyes.rollEyesAchoo()
+
+def chirping():
+    mir_calls.add_to_mission_queue("17f74b3b-5b99-11e9-90b2-94c691a3a93e")
+
+def emotionAngry():
+    mir_calls.add_to_mission_queue("9cf49b99-5b9b-11e9-90b2-94c691a3a93e")
+    time.sleep(0.2)
+    eyes.lookRight()
+    eyes.lookLeft()
+    eyes.lookDown()
